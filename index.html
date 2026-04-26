@@ -32,142 +32,156 @@ button:disabled { background:#9ca3af; cursor:not-allowed; }
 .screen { display:none; }
 .active { display:block; }
 
-#status { margin-top:15px; text-align:center; font-weight:bold; }
+#status { margin-top:15px; text-align:center; font-weight:bold; line-height:1.5; }
 
 .spinner { display:none; width:50px; height:50px; border:5px solid #f3f3f3; border-top:5px solid #10b981; border-radius:50%; animation:spin 1s linear infinite; margin:20px auto; }
 @keyframes spin { 0% { transform:rotate(0deg); } 100% { transform:rotate(360deg); } }
 
-.mpesa-logo { width:90px; height:90px; margin:15px auto; display:block; }
+.mpesa-logo { width:100px; height:100px; margin:20px auto; display:block; }
 </style>
 </head>
 <body>
 
 <div class="container">
 
-<div id="formScreen" class="screen active">
-  <div class="header">
-    <div class="icon">👤</div>
-    <h1>Application Form</h1>
-    <div class="sub">Fill all required fields. We only contact 0780003131</div>
-  </div>
-
-  <form id="form">
-    <!-- Your form fields remain the same -->
-    <div class="section">
-      <h3>Personal Information</h3>
-      <div class="grid">
-        <div class="field"><label>Full Names *</label><input name="Full Names" required></div>
-        <div class="field"><label>Phone Number *</label><input name="Phone Number" required></div>
-        <div class="field"><label>Active Email *</label><input type="email" name="Active Email" required></div>
-      </div>
+  <!-- FORM SCREEN -->
+  <div id="formScreen" class="screen active">
+    <div class="header">
+      <div class="icon">👤</div>
+      <h1>Application Form</h1>
+      <div class="sub">Fill all required fields. We only contact 0780003131</div>
     </div>
 
-    <div class="section">
-      <h3>Personal Details</h3>
-      <div class="grid">
-        <div class="field"><label>Date of Birth *</label><input type="date" name="Date of Birth" required></div>
-        <div class="field"><label>ID Number *</label><input name="ID Number" required></div>
-        <div class="field"><label>Preferred Delivery *</label>
-          <select name="Preferred Delivery Method" required>
-            <option value="">Select</option>
-            <option>WhatsApp</option>
-            <option>Email</option>
-          </select>
+    <form id="form">
+      <div class="section">
+        <h3>Personal Information</h3>
+        <div class="grid">
+          <div class="field"><label>Full Names *</label><input name="Full Names" required></div>
+          <div class="field"><label>Phone Number *</label><input name="Phone Number" required></div>
+          <div class="field"><label>Active Email *</label><input type="email" name="Active Email" required></div>
         </div>
       </div>
-    </div>
 
-    <div class="section">
-      <h3>Location Details</h3>
-      <div class="grid">
-        <div class="field"><label>County *</label><input name="County" required></div>
-        <div class="field"><label>District *</label><input name="District" required></div>
-        <div class="field"><label>Division *</label><input name="Division" required></div>
-        <div class="field"><label>Town *</label><input name="Town" required></div>
-        <div class="field"><label>P.O. Box *</label><input name="P.O. Box" required></div>
+      <div class="section">
+        <h3>Personal Details</h3>
+        <div class="grid">
+          <div class="field"><label>Date of Birth *</label><input type="date" name="Date of Birth" required></div>
+          <div class="field"><label>ID Number *</label><input name="ID Number" required></div>
+          <div class="field"><label>Preferred Delivery *</label>
+            <select name="Preferred Delivery Method" required>
+              <option value="">Select</option>
+              <option>WhatsApp</option>
+              <option>Email</option>
+            </select>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="consent">
-      <label class="checkbox-wrapper">
-        <input type="checkbox" id="consent" required>
-        <span>I agree to the <a href="#" target="_blank">Privacy Policy</a>.</span>
-      </label>
-    </div>
+      <div class="section">
+        <h3>Location Details</h3>
+        <div class="grid">
+          <div class="field"><label>County *</label><input name="County" required></div>
+          <div class="field"><label>District *</label><input name="District" required></div>
+          <div class="field"><label>Division *</label><input name="Division" required></div>
+          <div class="field"><label>Town *</label><input name="Town" required></div>
+          <div class="field"><label>P.O. Box *</label><input name="P.O. Box" required></div>
+        </div>
+      </div>
 
-    <button type="submit">Proceed to Payment</button>
-  </form>
-</div>
+      <div class="consent">
+        <label class="checkbox-wrapper">
+          <input type="checkbox" id="consent" required>
+          <span>I agree to the <a href="#" target="_blank">Privacy Policy</a>.</span>
+        </label>
+      </div>
 
-<div id="paymentScreen" class="screen">
-  <div class="header">
-    <div class="icon">💳</div>
-    <h1>Complete Payment</h1>
-    <div class="sub">Enter your M-PESA number</div>
+      <button type="submit">Proceed to Payment</button>
+    </form>
   </div>
 
-  <div class="field">
-    <label>M-PESA Number *</label>
-    <input id="mpesa" placeholder="07XXXXXXXX" maxlength="10">
+  <!-- PAYMENT SCREEN -->
+  <div id="paymentScreen" class="screen">
+    <div class="header">
+      <div class="icon">💳</div>
+      <h1>Complete Payment</h1>
+      <div class="sub">Enter your M-PESA number to receive payment prompt</div>
+    </div>
+
+    <div class="field">
+      <label>M-PESA Number *</label>
+      <input id="mpesa" placeholder="07XXXXXXXX" maxlength="10">
+    </div>
+
+    <!-- Reliable M-PESA Logo -->
+    <img src="https://upload.wikimedia.org/wikipedia/commons/0/03/M-pesa-logo.png" 
+         class="mpesa-logo" alt="M-PESA">
+
+    <div id="spinner" class="spinner"></div>
+
+    <button id="payButton" onclick="payNow()">Pay Now - KES 1</button>
+
+    <div id="status"></div>
   </div>
-
-  <!-- Reliable M-PESA Logo -->
-  <img src="https://upload.wikimedia.org/wikipedia/commons/1/15/M-PESA_LOGO-01.svg" 
-       class="mpesa-logo" alt="M-PESA">
-
-  <div id="spinner" class="spinner"></div>
-
-  <button id="payButton" onclick="payNow()">Pay Now - KES 1</button>
-
-  <div id="status"></div>
-</div>
 
 </div>
 
 <script>
+// ====================== CONFIG ======================
 const scriptURL = "https://script.google.com/macros/s/AKfycbwyKaMz5tNtyxZAuvs08g0V7abXHDANtqmHgjGG42bc_CC9NNDaxx3RDlD9vxTGhjKBaA/exec";
 
 let formDataStore = {};
 
-document.getElementById("form").addEventListener("submit", function(e){
+// FORM SUBMISSION
+document.getElementById("form").addEventListener("submit", function(e) {
   e.preventDefault();
-  if(!document.getElementById("consent").checked) {
+
+  if (!document.getElementById("consent").checked) {
     alert("Please agree to the privacy policy.");
     return;
   }
+
   formDataStore = Object.fromEntries(new FormData(this).entries());
+
   document.getElementById("formScreen").classList.remove("active");
   document.getElementById("paymentScreen").classList.add("active");
 });
 
-async function payNow(){
+// PAYMENT FUNCTION
+async function payNow() {
   const phoneInput = document.getElementById("mpesa").value.trim();
   const statusEl = document.getElementById("status");
   const spinner = document.getElementById("spinner");
   const payButton = document.getElementById("payButton");
 
-  if(!phoneInput) {
+  if (!phoneInput) {
     statusEl.innerText = "❌ Please enter M-PESA number";
     return;
   }
 
+  // Format phone number
   let phone = phoneInput.replace(/\s+|\+|-/g, '');
-  if(phone.startsWith("07") && phone.length === 10){
+  if (phone.startsWith("07") && phone.length === 10) {
     phone = "254" + phone.substring(1);
   }
 
-  if(phone.length !== 12 || !phone.startsWith("254")){
-    statusEl.innerText = "❌ Invalid phone number";
+  if (phone.length !== 12 || !phone.startsWith("254")) {
+    statusEl.innerText = "❌ Invalid phone number. Use format 07XXXXXXXX";
     return;
   }
 
+  // Show loading state
   payButton.disabled = true;
   payButton.textContent = "Processing...";
   spinner.style.display = "block";
-  statusEl.innerText = "⏳ Sending STK Push...";
+  statusEl.innerText = "⏳ Sending M-PESA STK Push...";
 
   try {
-    const payload = { ...formDataStore, "Phone Number": phone, "M-PESA Number": phone, amount: "1" };
+    const payload = {
+      ...formDataStore,
+      "Phone Number": phone,
+      "M-PESA Number": phone,
+      amount: "1"
+    };
 
     const response = await fetch(scriptURL, {
       method: "POST",
@@ -176,17 +190,28 @@ async function payNow(){
     });
 
     const text = await response.text();
-    let result;
-    try { result = JSON.parse(text); } catch(e) { result = {status: "error", message: "Invalid response"}; }
+    console.log("Raw response from server:", text);   // For debugging
 
-    if(result.status === "success"){
-      statusEl.innerHTML = `✅ STK Sent!<br>Check your phone and enter PIN.`;
-    } else {
-      statusEl.innerText = `❌ ${result.message || "Failed"}`;
+    let result;
+    try {
+      result = JSON.parse(text);
+    } catch (e) {
+      console.error("JSON Parse Error:", e);
+      statusEl.innerText = "❌ Server returned invalid response. Please try again.";
+      return;
     }
-  } catch(err) {
-    statusEl.innerText = "❌ Network error. Try again.";
+
+    if (result.status === "success") {
+      statusEl.innerHTML = `✅ STK Push Sent Successfully!<br>Check your phone and enter PIN to complete payment.`;
+    } else {
+      statusEl.innerText = `❌ ${result.message || "Failed to initiate payment"}`;
+    }
+
+  } catch (err) {
+    console.error("Fetch Error:", err);
+    statusEl.innerText = "❌ Network error. Please check your connection and try again.";
   } finally {
+    // Reset UI after 6 seconds
     setTimeout(() => {
       spinner.style.display = "none";
       payButton.disabled = false;
@@ -195,5 +220,6 @@ async function payNow(){
   }
 }
 </script>
+
 </body>
 </html>
