@@ -32,7 +32,7 @@ button:disabled { background:#9ca3af; cursor:not-allowed; }
 .screen { display:none; }
 .active { display:block; }
 
-#status { margin-top:15px; text-align:center; font-weight:bold; line-height:1.5; }
+#status { margin-top:15px; text-align:center; font-weight:bold; line-height:1.5; padding:10px; border-radius:8px; }
 
 .spinner { display:none; width:50px; height:50px; border:5px solid #f3f3f3; border-top:5px solid #10b981; border-radius:50%; animation:spin 1s linear infinite; margin:20px auto; }
 @keyframes spin { 0% { transform:rotate(0deg); } 100% { transform:rotate(360deg); } }
@@ -112,8 +112,7 @@ button:disabled { background:#9ca3af; cursor:not-allowed; }
       <input id="mpesa" placeholder="07XXXXXXXX" maxlength="10">
     </div>
 
-    <!-- Reliable M-PESA Logo -->
-    <img src="https://upload.wikimedia.org/wikipedia/commons/0/03/M-pesa-logo.png" 
+    <img src="https://upload.wikimedia.org/wikipedia/commons/1/15/M-PESA_LOGO-01.svg" 
          class="mpesa-logo" alt="M-PESA">
 
     <div id="spinner" class="spinner"></div>
@@ -134,19 +133,16 @@ let formDataStore = {};
 // FORM SUBMISSION
 document.getElementById("form").addEventListener("submit", function(e) {
   e.preventDefault();
-
   if (!document.getElementById("consent").checked) {
     alert("Please agree to the privacy policy.");
     return;
   }
-
   formDataStore = Object.fromEntries(new FormData(this).entries());
-
   document.getElementById("formScreen").classList.remove("active");
   document.getElementById("paymentScreen").classList.add("active");
 });
 
-// PAYMENT FUNCTION
+// IMPROVED PAYMENT FUNCTION
 async function payNow() {
   const phoneInput = document.getElementById("mpesa").value.trim();
   const statusEl = document.getElementById("status");
@@ -158,22 +154,22 @@ async function payNow() {
     return;
   }
 
-  // Format phone number
   let phone = phoneInput.replace(/\s+|\+|-/g, '');
   if (phone.startsWith("07") && phone.length === 10) {
     phone = "254" + phone.substring(1);
   }
 
   if (phone.length !== 12 || !phone.startsWith("254")) {
-    statusEl.innerText = "❌ Invalid phone number. Use format 07XXXXXXXX";
+    statusEl.innerText = "❌ Invalid phone number. Use 07XXXXXXXX";
     return;
   }
 
-  // Show loading state
+  // UI Loading
   payButton.disabled = true;
-  payButton.textContent = "Processing...";
+  payButton.textContent = "Sending STK...";
   spinner.style.display = "block";
-  statusEl.innerText = "⏳ Sending M-PESA STK Push...";
+  statusEl.style.color = "#666";
+  statusEl.innerText = "⏳ Sending M-PESA prompt to your phone...";
 
   try {
     const payload = {
@@ -183,35 +179,45 @@ async function payNow() {
       amount: "1"
     };
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 25000); // 25 second timeout
+
     const response = await fetch(scriptURL, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams(payload)
+      body: new URLSearchParams(payload),
+      signal: controller.signal
     });
 
+    clearTimeout(timeoutId);
+
     const text = await response.text();
-    console.log("Raw response from server:", text);   // For debugging
+    console.log("Raw server response:", text);
 
     let result;
     try {
       result = JSON.parse(text);
     } catch (e) {
-      console.error("JSON Parse Error:", e);
-      statusEl.innerText = "❌ Server returned invalid response. Please try again.";
-      return;
+      result = { status: "error", message: "Invalid server response" };
     }
 
     if (result.status === "success") {
+      statusEl.style.color = "#10b981";
       statusEl.innerHTML = `✅ STK Push Sent Successfully!<br>Check your phone and enter PIN to complete payment.`;
     } else {
-      statusEl.innerText = `❌ ${result.message || "Failed to initiate payment"}`;
+      statusEl.style.color = "#dc2626";
+      statusEl.innerText = `❌ ${result.message || "Failed to send STK"}`;
     }
 
   } catch (err) {
     console.error("Fetch Error:", err);
-    statusEl.innerText = "❌ Network error. Please check your connection and try again.";
+    statusEl.style.color = "#dc2626";
+    if (err.name === "AbortError") {
+      statusEl.innerText = "❌ Request timed out. Please try again.";
+    } else {
+      statusEl.innerText = "❌ Network error. Please check your internet and try again.";
+    }
   } finally {
-    // Reset UI after 6 seconds
     setTimeout(() => {
       spinner.style.display = "none";
       payButton.disabled = false;
